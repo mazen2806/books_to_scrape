@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+    networks:
+      - mongodb_network
+    ports:
+      - "27017:27017"
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data/db
+
+  books_parser_app:
+    build: .
+    environment:
+      - CONN_STR=mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongodb/
+    container_name: books-parser-service
+    depends_on:
+      - mongodb
+    networks:
+      - mongodb_network
+    volumes:
+      - ./app:/app
+    command: python main.py
+
+
+volumes:
+  mongo-data:
+
+networks:
+  mongodb_network:
+    driver: bridge
+    name: mongo-network
