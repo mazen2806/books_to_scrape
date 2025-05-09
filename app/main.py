@@ -76,7 +76,7 @@ async def get_books():
     books_urls = get_books_urls()
 
     for book_url in books_urls:
-        tasks.append(parse_page(book_url, "row"))
+        tasks.append(asyncio.create_task(parse_page(book_url, "row")))
 
     books = asyncio.gather(*tasks)
     results = await books
