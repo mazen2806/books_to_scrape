@@ -99,11 +99,6 @@ async def get_books():
         if books_with_quantity:
             save_books(books_with_quantity)
 
-    for task in tasks:
-        if task.done() is False:
-            task.cancel()
-            print(f'Pending: {task.get_name()}')
-
 
 if __name__ == "__main__":
     print("parsing started")
