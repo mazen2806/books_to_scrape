@@ -26,7 +26,7 @@ services:
       - mongodb_network
     volumes:
       - ./app:/app
-    command: python main.py
+    command: time python main.py
 
 
 volumes:

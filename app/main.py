@@ -86,16 +86,18 @@ async def get_books():
     for item in flattened_results:
         tasks.append(asyncio.create_task(get_quantity_in_stock(item)))
 
+    books_with_quantity = []
     try:
         books_with_quantity = await asyncio.gather(*tasks)
-        print(books_with_quantity)
-        save_books(books_with_quantity)
     except asyncio.exceptions.CancelledError as e:
         print(f"CancelledError happened : {e}")
     except aiohttp.client_exceptions.ConnectionTimeoutError as e:
         print(f"ConnectionTimeoutError happened : {e}")
     except aiohttp.client_exceptions.ClientConnectorError as e:
         print(f"ClientConnectorError happened : {e}")
+    finally:
+        if books_with_quantity:
+            save_books(books_with_quantity)
 
     for task in tasks:
         if task.done() is False:
